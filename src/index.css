@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-vw-blue: #004751;
+  --color-vw-teal: #2C5E50;
+  --color-parchment: #F5F2ED;
+  --color-oil: #1C1C1C;
+}
+
+@layer base {
+  body {
+    @apply font-sans bg-parchment text-oil selection:bg-vw-blue selection:text-white;
+  }
+}
+
+.hardware-card {
+  @apply bg-white border border-oil/10 rounded-xl shadow-sm hover:shadow-md transition-all duration-300;
+}
+
+.section-label {
+  @apply font-mono text-xs uppercase tracking-widest text-oil/50 mb-4 block;
+}
