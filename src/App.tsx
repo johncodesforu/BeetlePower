@@ -31,6 +31,41 @@ const SectionLabel = ({ children }: { children: ReactNode }) => (
 );
 
 export default function App() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const updateStatus = () => {
+      const now = new Date();
+      // Translate to Los Angeles time
+      const laTime = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'America/Los_Angeles',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+        weekday: 'long'
+      }).formatToParts(now);
+
+      const parts: Record<string, string> = {};
+      laTime.forEach(part => {
+        parts[part.type] = part.value;
+      });
+
+      const day = parts.weekday;
+      const hour = parseInt(parts.hour, 10);
+      const minute = parseInt(parts.minute, 10);
+      const currentTime = hour + minute / 60;
+
+      const isWeekday = !['Saturday', 'Sunday'].includes(day);
+      const isBizHours = currentTime >= 8 && currentTime < 17.5; // 8:00 AM - 5:30 PM
+
+      setIsOpen(isWeekday && isBizHours);
+    };
+
+    updateStatus();
+    const interval = setInterval(updateStatus, 60000); // Check every minute
+    return () => clearInterval(interval);
+  }, []);
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -476,8 +511,10 @@ export default function App() {
                       Monday – Friday: 8:00 AM – 5:30 PM<br />
                       Saturday – Sunday: Closed
                     </p>
-                    <div className="mt-3 inline-flex items-center gap-2 bg-vw-blue/10 text-vw-blue px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                      Currently Open
+                    <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                      isOpen ? 'bg-vw-blue/10 text-vw-blue' : 'bg-red-500/10 text-red-600'
+                    }`}>
+                      Currently {isOpen ? 'Open' : 'Closed'}
                     </div>
                   </div>
                 </div>
